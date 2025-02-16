@@ -214,6 +214,30 @@ def update_risk(risk_id):
     return render_template('risk_register.html', risk=risk)
 
 
+@app.route('/edit_project/<int:project_id>', methods=['GET'])
+def edit_project(project_id):
+    project = Project.query.get_or_404(project_id)
+    return render_template('edit_project.html', project=project)
+@app.route('/update_project/<int:project_id>', methods=['POST'])
+def update_project(project_id):
+    project = Project.query.get_or_404(project_id)
+
+    data = request.form
+
+    project.name = data['name']
+    project.job_number = data['job_number']
+    project.superintendent = data['superintendent']
+    project.manager = data['manager']
+    project.location = data['location']
+    project.bid_cost = float(data['bid_cost']) if data['bid_cost'] else None
+    project.bid_value = float(data['bid_value']) if data['bid_value'] else None
+    project.bid_cm = float(data['bid_cm']) if data['bid_cm'] else None
+    project.impact_threshold = float(data['impact_threshold']) if data['impact_threshold'] else None
+
+    db.session.commit()
+
+    return redirect(url_for('project_detail', project_id=project.id))
+
 @app.route('/delete_risk/<int:risk_id>', methods=['POST'])
 def delete_risk(risk_id):
     risk = Risk.query.get_or_404(risk_id)

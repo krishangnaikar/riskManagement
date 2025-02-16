@@ -114,11 +114,11 @@
         <!-- General Tab -->
         <div class="tab-pane fade show active" id="general" role="tabpanel">
           <div class="mb-3">
-            <label for="date" class="form-label">Date Identified</label>
+            <label for="date" class="form-label">Date Identified *</label>
             <input type="date" class="form-control" name="date" required />
           </div>
           <div class="mb-3">
-            <label for="classification" class="form-label">Risk or Issue?</label>
+            <label for="classification" class="form-label">Risk or Issue? *</label>
             <select class="form-control" name="classification" required>
               <option value="">Select category</option>
               <option value="Risk">Risk</option>
@@ -126,7 +126,7 @@
             </select>
           </div>
           <div class="mb-3">
-            <label for="type" class="form-label">Threat or Opportunity?</label>
+            <label for="type" class="form-label">Threat or Opportunity? *</label>
             <select class="form-control" name="type" required>
               <option value="">Select type</option>
               <option value="Threat">Threat</option>
@@ -138,7 +138,7 @@
         <!-- Assessment Tab -->
         <div class="tab-pane fade" id="assessment" role="tabpanel">
           <div class="mb-3">
-            <label for="risk_type" class="form-label">Risk Type</label>
+            <label for="risk_type" class="form-label">Risk Type *</label>
             <select class="form-control" name="risk_type" required>
               <option value="">Select risk type</option>
               <option value="Resource">Resource</option>
@@ -148,15 +148,15 @@
             </select>
           </div>
           <div class="mb-4">
-            <label for="name" class="form-label">Risk Name</label>
+            <label for="name" class="form-label">Risk Name *</label>
             <input type="text" class="form-control" name="name" required />
           </div>
           <div class="mb-4">
-            <label for="description" class="form-label">Detailed Description</label>
+            <label for="description" class="form-label">Detailed Description *</label>
             <textarea class="form-control" name="description" rows="2" required></textarea>
           </div>
           <div class="mb-4">
-            <label for="root_cause" class="form-label">Root Cause</label>
+            <label for="root_cause" class="form-label">Root Cause *</label>
             <select class="form-control" name="root_cause" required>
               <option value="Estimation">Estimation</option>
               <option value="Execution">Execution</option>
@@ -165,23 +165,23 @@
             </select>
           </div>
           <div class="mb-4">
-            <label for="wbs" class="form-label">WBS Related to Risk</label>
+            <label for="wbs" class="form-label">WBS Related to Risk *</label>
             <input type="text" class="form-control" name="wbs" required/>
           </div>
           <div class="mb-3">
-            <label for="probability" class="form-label">Probability (1-5)</label>
+            <label for="probability" class="form-label">Probability (1-5) *</label>
             <input type="number" class="form-control" name="probability" min="1" max="5" required />
           </div>
           <div class="mb-3">
-            <label for="impact" class="form-label">Impact (1-5)</label>
+            <label for="impact" class="form-label">Impact (1-5) *</label>
             <input type="number" class="form-control" name="impact" min="1" max="5" required />
           </div>
           <div class="mb-2">
-            <label for="cost_impact" class="form-label">Cost Impact ($)</label>
+            <label for="cost_impact" class="form-label">Cost Impact ($) *</label>
             <input type="number" class="form-control" name="cost_impact" step="0.01" required/>
           </div>
           <div class="mb-2">
-            <label for="most_likely_days" class="form-label">Most Likely (# Days)</label>
+            <label for="most_likely_days" class="form-label">Most Likely (# Days) *</label>
             <input type="number" class="form-control" name="most_likely_days" required/>
           </div>
         </div>
@@ -189,7 +189,7 @@
         <!-- Response & Tracking Tab -->
         <div class="tab-pane fade" id="response" role="tabpanel">
           <div class="mb-4">
-            <label for="response_category" class="form-label">Response Category</label>
+            <label for="response_category" class="form-label">Response Category *</label>
             <select class="form-control" name="response_category" required>
               <option value="Avoid">Avoid</option>
               <option value="Accept">Accept</option>
@@ -202,7 +202,7 @@
             </select>
           </div>
           <div class="mb-4">
-            <label for="owner" class="form-label">Owner</label>
+            <label for="owner" class="form-label">Owner *</label>
             <input type="text" class="form-control" name="owner" required/>
           </div>
           <div class="mb-4">
@@ -210,7 +210,7 @@
             <textarea class="form-control" name="contingency_plan" rows="2"></textarea>
           </div>
           <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
+            <label for="status" class="form-label">Status *</label>
             <select class="form-control" name="status" required>
               <option value="Open">Open</option>
               <option value="Closed">Closed</option>
