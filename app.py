@@ -238,6 +238,16 @@ def update_project(project_id):
 
     return redirect(url_for('project_detail', project_id=project.id))
 
+
+@app.route('/delete_project/<int:project_id>', methods=['POST'])
+def delete_project(project_id):
+    project = Project.query.get_or_404(project_id)
+
+    db.session.delete(project)
+    db.session.commit()
+
+    return redirect(url_for('index'))
+
 @app.route('/delete_risk/<int:risk_id>', methods=['POST'])
 def delete_risk(risk_id):
     risk = Risk.query.get_or_404(risk_id)

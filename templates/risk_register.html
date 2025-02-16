@@ -75,6 +75,66 @@
                 }
             }
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let selectedValue = "{{ risk.classification }}";
+            let dropdown = document.getElementById("classification");
+
+            for (let option of dropdown.options) {
+                if (option.value === selectedValue) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let selectedValue = "{{ risk.type }}";
+            let dropdown = document.getElementById("type");
+
+            for (let option of dropdown.options) {
+                if (option.value === selectedValue) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let selectedValue = "{{ risk.risk_type }}";
+            let dropdown = document.getElementById("risk_type");
+
+            for (let option of dropdown.options) {
+                if (option.value === selectedValue) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let selectedValue = "{{ risk.root_cause }}";
+            let dropdown = document.getElementById("root_cause");
+
+            for (let option of dropdown.options) {
+                if (option.value === selectedValue) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let selectedValue = "{{ risk.status }}";
+            let dropdown = document.getElementById("status");
+
+            for (let option of dropdown.options) {
+                if (option.value === selectedValue) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        });
     </script>
 
 
@@ -94,16 +154,27 @@
                 <input type="date" name="date" value="{{ risk.date }}">
             </div>
             <div class="form-group">
-                <label>Classification:</label>
-                <input type="text" name="classification" value="{{ risk.classification }}">
+                <label for="classification" class="form-label">Classification</label>
+                <select class="form-control" name="classification" id="classification" required>
+                  <option value="Risk">Risk</option>
+                  <option value="Issue">Issue</option>
+                </select>
             </div>
             <div class="form-group">
-                <label>Type:</label>
-                <input type="text" name="type" value="{{ risk.type }}">
+                <label for="type" class="form-label">Type</label>
+                <select class="form-control" name="type" id="type" required>
+                  <option value="Threat">Threat</option>
+                  <option value="Opportunity">Opportunity</option>
+                </select>
             </div>
             <div class="form-group">
-                <label>Risk Type:</label>
-                <input type="text" name="risk_type" value="{{ risk.risk_type }}">
+                <label for="risk_type" class="form-label">Risk Type</label>
+                <select class="form-control" name="risk_type" id="risk_type" required>
+                  <option value="Resource">Resource</option>
+                  <option value="Time">Time</option>
+                  <option value="Quality">Quality</option>
+                  <option value="Financial">Financial</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>Name:</label>
@@ -114,8 +185,13 @@
                 <textarea name="description">{{ risk.description }}</textarea>
             </div>
             <div class="form-group">
-                <label>Root Cause:</label>
-                <input type="text" name="root_cause" value="{{ risk.root_cause }}">
+                <label for="root_cause" class="form-label">Root Cause</label>
+                <select class="form-control" name="root_cause" required>
+                  <option value="Estimation">Estimation</option>
+                  <option value="Execution">Execution</option>
+                  <option value="Scope">Scope</option>
+                  <option value="Inflation">Inflation</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>WBS:</label>
@@ -168,8 +244,12 @@
                 <input type="text" name="owner" value="{{ risk.owner }}">
             </div>
             <div class="form-group">
-                <label>Status:</label>
-                <input type="text" name="status" value="{{ risk.status }}">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-control" name="status" id="status" required>
+                  <option value="Open">Open</option>
+                  <option value="Closed">Closed</option>
+                  <option value="Ongoing">Ongoing</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>Last Updated:</label>
