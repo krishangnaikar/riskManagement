@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Details</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: #003366;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .save-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .back-button {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #003366;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let selectedValue = "{{ risk.response_category }}";
+            let dropdown = document.getElementById("response-category");
+
+            for (let option of dropdown.options) {
+                if (option.value === selectedValue) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        });
+    </script>
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Risk Details</h1>
+        </div>
+        <form method="POST" action="{{ url_for('update_risk', risk_id=risk.id) }}">
+            <div class="form-group">
+                <label>Project ID:</label>
+                <input type="text" name="project_id" value="{{ risk.project_id }}" readonly>
+            </div>
+            <div class="form-group">
+                <label>Date:</label>
+                <input type="date" name="date" value="{{ risk.date }}">
+            </div>
+            <div class="form-group">
+                <label>Classification:</label>
+                <input type="text" name="classification" value="{{ risk.classification }}">
+            </div>
+            <div class="form-group">
+                <label>Type:</label>
+                <input type="text" name="type" value="{{ risk.type }}">
+            </div>
+            <div class="form-group">
+                <label>Risk Type:</label>
+                <input type="text" name="risk_type" value="{{ risk.risk_type }}">
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" name="name" value="{{ risk.name }}">
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <textarea name="description">{{ risk.description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Root Cause:</label>
+                <input type="text" name="root_cause" value="{{ risk.root_cause }}">
+            </div>
+            <div class="form-group">
+                <label>WBS:</label>
+                <input type="text" name="wbs" value="{{ risk.wbs }}">
+            </div>
+            <div class="form-group">
+                <label>Probability:</label>
+                <input type="number" name="probability" value="{{ risk.probability }}">
+            </div>
+            <div class="form-group">
+                <label>Impact:</label>
+                <input type="number" name="impact" value="{{ risk.impact }}">
+            </div>
+            <div class="form-group">
+                <label>Most Likely Cost Impact:</label>
+                <input type="number" name="most_likely_cost" value="{{ risk.most_likely_cost }}">
+            </div>
+            <div class="form-group">
+                <label>Most Likely (# Days):</label>
+                <input type="number" name="most_likely_days" value="{{ risk.most_likely_days }}">
+            </div>
+            <div class="form-group">
+
+                <label for="response_category" class="form-label">Response Category</label>
+                <select class="form-control" name="response_category" id="response-category">
+                  <option value="Avoid">Avoid</option>
+                  <option value="Accept">Accept</option>
+                  <option value="Mitigate">Mitigate</option>
+                  <option value="Transfer">Transfer</option>
+                  <option value="Enhance">Enhance</option>
+                  <option value="Share">Share</option>
+                  <option value="Ignore">Ignore</option>
+                  <option value="Exploit">Exploit</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Overall Risk Value:</label>
+                <input type="number" name="overall_risk_value" value="{{ risk.overall_risk_value }}">
+            </div>
+            <div class="form-group">
+                <label>Cost Impact:</label>
+                <input type="number" name="cost_impact" value="{{ risk.cost_impact }}">
+            </div>
+            <div class="form-group">
+                <label>Contingency Plan:</label>
+                <textarea name="contingency_plan">{{ risk.contingency_plan }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Owner:</label>
+                <input type="text" name="owner" value="{{ risk.owner }}">
+            </div>
+            <div class="form-group">
+                <label>Status:</label>
+                <input type="text" name="status" value="{{ risk.status }}">
+            </div>
+            <div class="form-group">
+                <label>Last Updated:</label>
+                <input type="date" name="last_updated" value="{{ risk.last_updated }}">
+            </div>
+            <div class="form-group">
+                <label>Tracking Comments:</label>
+                <textarea name="tracking_comments">{{ risk.tracking_comments }}</textarea>
+            </div>
+            <button type="submit" class="save-button">Save Changes</button>
+        </form>
+        <a href="{{ url_for('project_detail', project_id=risk.project_id) }}" class="back-button">Back to Project</a>
+    </div>
+</body>
+</html>
