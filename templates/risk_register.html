@@ -259,6 +259,26 @@
                 <label>Tracking Comments:</label>
                 <textarea name="tracking_comments">{{ risk.tracking_comments }}</textarea>
             </div>
+            <div class="form-group">
+                <label>Change Order Revenue:</label>
+                <input type="number" name="change_order_revenue" value="{{ risk.change_order_revenue }}">
+            </div>
+            <div class="form-group">
+                <label>Actual Cost Impact:</label>
+                <input type="number" name="actual_cost_impact" value="{{ risk.actual_cost_impact }}">
+            </div>
+            <div class="form-group">
+                <label> Actual Schedule Impact (days) :</label>
+                <input type="number" name="actual_schedule_impact" value="{{ risk.actual_schedule_impact }}">
+            </div>
+            <div class="form-group">
+                <label> Variance Cost:</label>
+                <input type="number" name="variance_cost" value="{{ risk.variance_cost }}">
+            </div>
+            <div class="form-group">
+                <label> Variance (Days):</label>
+                <input type="number" name="variance_days" value="{{ risk.variance_days }}">
+            </div>
             <button type="submit" class="save-button">Save Changes</button>
         </form>
         <a href="{{ url_for('project_detail', project_id=risk.project_id) }}" class="back-button">Back to Project</a>

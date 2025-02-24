@@ -5,14 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Construction Risk Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchInput");
+            const projectTable = document.getElementById("projectTable");
+            const rows = projectTable.getElementsByTagName("tr");
+
+            searchInput.addEventListener("keyup", function () {
+                const filter = searchInput.value.toLowerCase();
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName("td");
+                    let match = false;
+                    for (let j = 0; j < cells.length - 1; j++) {
+                        if (cells[j].textContent.toLowerCase().includes(filter)) {
+                            match = true;
+                            break;
+                        }
+                    }
+                    rows[i].style.display = match ? "" : "none";
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container mt-4">
         <h1 class="text-center">Construction Risk Management</h1>
-
         <input class="form-control mb-3" id="searchInput" type="text" placeholder="Search Projects...">
-
-        <table class="table table-bordered">
+        <a href="/add_project" class="btn btn-primary">Add Project</a>
+        <br><br>
+        <label for="dataAttribute">Select Data Attribute:</label>
+        <select id="dataAttribute" class="form-control">
+            <option value="overall_risk_value">Overall Risk Value</option>
+            <option value="cost_impact">Cost Impact</option>
+            <option value="most_likely_cost">Most Likely Cost</option>
+            <option value="most_likely_days">Most Likely Days</option>
+            <option value="variance_cost">Variance Cost</option>
+            <option value="variance_days">Variance Days</option>
+        </select>
+        <svg id="chart" width="800" height="500"></svg>
+        <table class="table table-bordered mt-4">
             <thead>
                 <tr>
                     <th>Project Name</th>
@@ -38,57 +71,32 @@
                 {% endfor %}
             </tbody>
         </table>
-
-        <h2 class="mt-4">Add New Project</h2>
-        <form action="/add_project" method="POST" class="mt-3">
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="name" class="form-label">Project Name *</label>
-                    <input type="text" class="form-control" name="name" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="job_number" class="form-label">Job Number *</label>
-                    <input type="text" class="form-control" name="job_number" required>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <label for="superintendent" class="form-label">Superintendent *</label>
-                    <input type="text" class="form-control" name="superintendent" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="manager" class="form-label">Project Manager *</label>
-                    <input type="text" class="form-control" name="manager" required>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <label for="location" class="form-label">Location *</label>
-                    <input type="text" class="form-control" name="location" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="bid_cost" class="form-label">Bid Contract Cost ($) *</label>
-                    <input type="number" class="form-control" name="bid_cost" step="0.01" required>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <label for="bid_value" class="form-label">Bid Contract Value ($) *</label>
-                    <input type="number" class="form-control" name="bid_value" step="0.01" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="bid_cm" class="form-label">Bid CM% *</label>
-                    <input type="number" class="form-control" name="bid_cm" step="0.01" required>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <label for="impact_threshold" class="form-label">Impact Threshold %</label>
-                    <input type="number" class="form-control" name="impact_threshold" step="0.01">
-                </div>
-            </div>
-            <button type="submit" class="btn btn-success mt-3">Add Project</button>
-        </form>
     </div>
+    <script>
+        const projects = {{ projects | tojson }};
+        function drawGraph(attribute) {
+            d3.select("#chart").selectAll("*").remove();
+            const svg = d3.select("#chart"), width = 800, height = 500;
+            const margin = { top: 20, right: 30, bottom: 100, left: 50 };
+            const innerWidth = width - margin.left - margin.right;
+            const innerHeight = height - margin.top - margin.bottom;
+            const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+            const xScale = d3.scaleBand().domain(projects.map(d => d.name)).range([0, innerWidth]).padding(0.2);
+            const yScale = d3.scaleLinear().domain([0, d3.max(projects, d => d[attribute])]).range([innerHeight, 0]);
+            g.append("g").attr("transform", `translate(0,${innerHeight})`).call(d3.axisBottom(xScale)).selectAll("text").attr("transform", "rotate(-40)").style("text-anchor", "end");
+            g.append("g").call(d3.axisLeft(yScale));
+            g.selectAll(".bar").data(projects).enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", d => xScale(d.name))
+                .attr("y", d => yScale(d[attribute]))
+                .attr("width", xScale.bandwidth())
+                .attr("height", d => innerHeight - yScale(d[attribute]))
+                .attr("fill", "steelblue");
+        }
+        document.getElementById("dataAttribute").addEventListener("change", function () {
+            drawGraph(this.value);
+        });
+        drawGraph("overall_risk_value");
+    </script>
 </body>
 </html>

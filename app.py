@@ -58,34 +58,58 @@ class Risk(db.Model):
 @app.route('/')
 def index():
     projects = Project.query.all()
-    return render_template('index.html', projects=projects)
+
+    # Convert project objects to dictionaries
+    project_list = []
+    for project in projects:
+        project_list.append({
+            "id": project.id,
+            "name": project.name,
+            "job_number": project.job_number,
+            "location": project.location,
+            "bid_cost": float(project.bid_cost) if project.bid_cost else None,
+            "bid_value": float(project.bid_value) if project.bid_value else None,
+            "bid_cm": float(project.bid_cm) if project.bid_cm else None,
+            "impact_threshold": float(project.impact_threshold) if project.impact_threshold else None,
+            "overall_risk_value": sum(risk.overall_risk_value for risk in project.risks) / len(project.risks) if project.risks else 0,
+            "cost_impact": sum(risk.cost_impact for risk in project.risks if risk.cost_impact) if project.risks else 0,
+            "most_likely_cost": sum(risk.most_likely_cost for risk in project.risks if risk.most_likely_cost) if project.risks else 0,
+            "most_likely_days": sum(risk.most_likely_days for risk in project.risks if risk.most_likely_days) if project.risks else 0,
+            "variance_cost": sum(risk.variance_cost for risk in project.risks if risk.variance_cost) if project.risks else 0,
+            "variance_days": sum(risk.variance_days for risk in project.risks if risk.variance_days) if project.risks else 0
+        })
+
+    return render_template('index.html', projects=project_list)
 
 @app.route('/project/<int:project_id>')
 def project_detail(project_id):
     project = Project.query.get_or_404(project_id)
     return render_template('project_detail.html', project=project)
 
-@app.route('/add_project', methods=['POST'])
+@app.route('/add_project', methods=['POST', 'GET'])
 def add_project():
-    data = request.form
-    if data['impact_threshold'] == '':
-        impact_threshold = -1
+    if request.method == "POST":
+        data = request.form
+        if data['impact_threshold'] == '':
+            impact_threshold = -1
+        else:
+            impact_threshold = data['impact_threshold']
+        new_project = Project(
+            name=data['name'],
+            job_number=data['job_number'],
+            superintendent=data['superintendent'],
+            manager=data['manager'],
+            location=data['location'],
+            bid_cost=data['bid_cost'],
+            bid_value=data['bid_value'],
+            bid_cm=data['bid_cm'],
+            impact_threshold=impact_threshold
+        )
+        db.session.add(new_project)
+        db.session.commit()
+        return redirect(url_for('index'))
     else:
-        impact_threshold = data['impact_threshold']
-    new_project = Project(
-        name=data['name'],
-        job_number=data['job_number'],
-        superintendent=data['superintendent'],
-        manager=data['manager'],
-        location=data['location'],
-        bid_cost=data['bid_cost'],
-        bid_value=data['bid_value'],
-        bid_cm=data['bid_cm'],
-        impact_threshold=impact_threshold
-    )
-    db.session.add(new_project)
-    db.session.commit()
-    return redirect(url_for('index'))
+        return render_template('add_project.html')
 
 
 from datetime import datetime

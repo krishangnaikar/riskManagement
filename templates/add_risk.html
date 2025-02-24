@@ -9,27 +9,89 @@
     document.addEventListener("DOMContentLoaded", function () {
       const statusSelect = document.querySelector('select[name="status"]');
       const coRevenueDiv = document.getElementById("co_revenue_div");
+      const nextButton = document.getElementById("nextBtn");
       const submitButton = document.getElementById("submitBtn");
-            const requiredFields = document.querySelectorAll("input[required], select[required]");
+      const generalTab = document.getElementById("general-tab");
+      const assessmentTab = document.getElementById("assessment-tab");
+      const responseTab = document.getElementById("response-tab");
+      const requiredFields = document.querySelectorAll("input[required], select[required], textarea[required]");
+      const tabs = document.querySelectorAll(".nav-link");
+
+      let currentTab = 0;
 
       function toggleCoRevenue() {
         coRevenueDiv.style.display = statusSelect.value === "Closed" ? "block" : "none";
       }
 
       function checkFormCompletion() {
-                let allFilled = true;
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
-                        allFilled = false;
-                    }
-                });
-                submitButton.disabled = !allFilled;
-            }
+        let allFilled = true;
+        requiredFields.forEach(field => {
+          if (!field.value.trim()) {
+            allFilled = false;
+          }
+        });
+        if (!allFilled) {
+          nextButton.style.display = "block";
+          submitButton.disabled = true;
+        } else {
+          submitButton.disabled = false;
+        }
+      }
+
+      function showTab(index) {
+        document.querySelectorAll(".tab-pane").forEach((tab, i) => {
+          tab.classList.toggle("show", i === index);
+          tab.classList.toggle("active", i === index);
+        });
+        tabs.forEach((tab, i) => {
+          tab.classList.toggle("active", i === index);
+        });
+        if (index < tabs.length-1) {
+          nextButton.disabled = false
+        } else {
+          nextButton.disabled = true;
+          submitButton.style.display = "block";
+          nextButton.style.display = "none";
+        }
+
+      }
+
+      nextButton.addEventListener("click", function () {
+        if (currentTab < tabs.length - 1) {
+          currentTab++;
+          showTab(currentTab);
+        }
+      });
+
+      generalTab.addEventListener("click", function () {
+        currentTab = 0;
+        nextButton.disabled = false;
+        nextButton.style.display = "block";
+        submitButton.style.display = "none";
+        showTab(currentTab);
+      });
+
+      assessmentTab.addEventListener("click", function () {
+        currentTab = 1;
+        nextButton.disabled = false;
+        nextButton.style.display = "block";
+        submitButton.style.display = "none";
+        showTab(currentTab);
+      });
+
+      responseTab.addEventListener("click", function () {
+        currentTab = 2;
+        nextButton.disabled = true;
+        submitButton.style.display = "block";
+        nextButton.style.display = "none";
+        showTab(currentTab);
+      });
 
       toggleCoRevenue();
       statusSelect.addEventListener("change", toggleCoRevenue);
       requiredFields.forEach(field => field.addEventListener("input", checkFormCompletion));
       checkFormCompletion();
+      showTab(currentTab);
     });
   </script>
   <style>
@@ -238,9 +300,9 @@
         </div>
       </div>
 
-      <button type="submit" id="submitBtn" class="btn btn-success mt-3" disabled>
-        Add Risk
-      </button>
+      <button type="button" id="nextBtn" class="btn btn-primary mt-3" disabled>Next</button>
+      <button type="submit" id="submitBtn" class="btn btn-success mt-3" style="display: none;">Add Risk</button>
+
     </form>
   </div>
 
