@@ -45,6 +45,7 @@
             <option value="variance_days">Variance Days</option>
         </select>
         <svg id="chart" width="800" height="500"></svg>
+        <div id="tooltip" style="position: absolute; visibility: hidden; background: lightgrey; padding: 5px; border-radius: 5px;"></div>
         <table class="table table-bordered mt-4">
             <thead>
                 <tr>
@@ -71,32 +72,44 @@
                 {% endfor %}
             </tbody>
         </table>
+        <script>
+            const projects = {{ projects | tojson }};
+            function drawGraph(attribute) {
+                d3.select("#chart").selectAll("*").remove();
+                const svg = d3.select("#chart"), width = 800, height = 500;
+                const margin = { top: 20, right: 30, bottom: 100, left: 50 };
+                const innerWidth = width - margin.left - margin.right;
+                const innerHeight = height - margin.top - margin.bottom;
+                const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+                const xScale = d3.scalePoint().domain(projects.map(d => d.name)).range([0, innerWidth]).padding(0.5);
+                const yScale = d3.scaleLinear().domain([0, d3.max(projects, d => d[attribute])]).range([innerHeight, 0]);
+                g.append("g").attr("transform", `translate(0,${innerHeight})`).call(d3.axisBottom(xScale)).selectAll("text").attr("transform", "rotate(-40)").style("text-anchor", "end");
+                g.append("g").call(d3.axisLeft(yScale));
+                const line = d3.line().x(d => xScale(d.name)).y(d => yScale(d[attribute]));
+                g.append("path").datum(projects).attr("fill", "none").attr("stroke", "steelblue").attr("stroke-width", 2).attr("d", line);
+                const tooltip = d3.select("#tooltip");
+                g.selectAll(".dot").data(projects).enter().append("circle")
+                    .attr("class", "dot")
+                    .attr("cx", d => xScale(d.name))
+                    .attr("cy", d => yScale(d[attribute]))
+                    .attr("r", 5)
+                    .attr("fill", "red")
+                    .on("mouseover", function (event, d) {
+                        tooltip.style("visibility", "visible")
+                            .text(`Project: ${d.name}, ${attribute}: ${d[attribute]}`);
+                    })
+                    .on("mousemove", function (event) {
+                        tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
+                    })
+                    .on("mouseout", function () {
+                        tooltip.style("visibility", "hidden");
+                    });
+            }
+            document.getElementById("dataAttribute").addEventListener("change", function () {
+                drawGraph(this.value);
+            });
+            drawGraph("overall_risk_value");
+        </script>
     </div>
-    <script>
-        const projects = {{ projects | tojson }};
-        function drawGraph(attribute) {
-            d3.select("#chart").selectAll("*").remove();
-            const svg = d3.select("#chart"), width = 800, height = 500;
-            const margin = { top: 20, right: 30, bottom: 100, left: 50 };
-            const innerWidth = width - margin.left - margin.right;
-            const innerHeight = height - margin.top - margin.bottom;
-            const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
-            const xScale = d3.scaleBand().domain(projects.map(d => d.name)).range([0, innerWidth]).padding(0.2);
-            const yScale = d3.scaleLinear().domain([0, d3.max(projects, d => d[attribute])]).range([innerHeight, 0]);
-            g.append("g").attr("transform", `translate(0,${innerHeight})`).call(d3.axisBottom(xScale)).selectAll("text").attr("transform", "rotate(-40)").style("text-anchor", "end");
-            g.append("g").call(d3.axisLeft(yScale));
-            g.selectAll(".bar").data(projects).enter().append("rect")
-                .attr("class", "bar")
-                .attr("x", d => xScale(d.name))
-                .attr("y", d => yScale(d[attribute]))
-                .attr("width", xScale.bandwidth())
-                .attr("height", d => innerHeight - yScale(d[attribute]))
-                .attr("fill", "steelblue");
-        }
-        document.getElementById("dataAttribute").addEventListener("change", function () {
-            drawGraph(this.value);
-        });
-        drawGraph("overall_risk_value");
-    </script>
 </body>
 </html>
